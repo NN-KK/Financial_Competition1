@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-DIR_PATH = "./data/BinanceData_d/"
+DIR_PATH = "./Data/data/BinanceData_d/"
 file_names = os.listdir(DIR_PATH)
 
 MIN_RECORDS = 600
@@ -25,5 +25,5 @@ def execute(file_name):
     df_ohlc['target'] = oc_ratio_bin.shift(-1)
     #df_ohlc['naive_pred'] = oc_ratio.apply(lambda x: 0 if x>=1 else 1).shift(1)
     df_ohlc.dropna(inplace=True) 
-
+    df_ohlc.to_csv('./Pool/ohlc_data.csv')
     return df_ohlc
