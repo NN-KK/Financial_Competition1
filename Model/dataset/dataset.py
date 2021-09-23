@@ -8,8 +8,7 @@ from Data.make_data import execute
 COL = ['open', 'high', 'low', 'close']
 
 class FinancialDataset(Dataset):
-    def __init__(self, file_name):
-        df = execute(file_name)
+    def __init__(self, df):
         self.x = df.loc[:, COL]
         self.y = df.loc[:, 'target']
       
