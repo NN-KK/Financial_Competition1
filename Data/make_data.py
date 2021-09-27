@@ -21,7 +21,7 @@ def execute(file_name):
     df_ohlc = df_orig.loc[:, ['date'] + COL]
 
     oc_ratio = (df_ohlc['close']/df_ohlc['open'])
-    oc_ratio_bin = oc_ratio.apply(lambda x: 1 if x>=1 else -1)
+    oc_ratio_bin = oc_ratio.apply(lambda x: 1 if x>=1 else 0)
     df_ohlc['target'] = oc_ratio_bin.shift(-1)
     df_ohlc['naive_pred'] = oc_ratio.apply(lambda x: 0 if x>=1 else 1).shift(1)
     df_ohlc.dropna(inplace=True) 
