@@ -12,7 +12,7 @@ from Model.rfc.model import RFC
 SEED = 42
 
 def dataloader(file_name, train_ratio, batch_size, type):
-    df = pd.read_csv('./Pool/ohlc_' + file_name + '.csv')
+    df = pd.read_csv('./Pool/' + file_name)
     n_samples = df.shape[0]
     train_size = int(n_samples * train_ratio)
     if type == 'train':

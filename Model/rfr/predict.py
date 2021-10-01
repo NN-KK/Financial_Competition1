@@ -63,9 +63,9 @@ for file_name in file_names:
     list_target.append(target[-1])
 
 df = pd.DataFrame(list_predict, columns = ["result"] , index = list_name)
-df.to_csv('predict_2_rfr.csv')
+df.to_csv('predict_2_rfr_0927.csv')
 df2 = pd.DataFrame(list_target, columns = ["target"] , index = list_name)
 df_merge = pd.concat([df, df2['target']], axis = 1)
-df_merge.to_csv('predict_target_2_rfr.csv')
+df_merge.to_csv('predict_target_2_rfr_0927.csv')
 
 print(mape(np.array(list_target), np.array(list_predict))*100)

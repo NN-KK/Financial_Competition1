@@ -62,6 +62,7 @@ def valid(model, file_name, batch_size, windows, train_ratio = 0.7):
     model.eval()
     loss_fn = nn.MSELoss()
     all_loss_val = 0
+    all_roc_auc = 0
     val_loader = dataloader(file_name, train_ratio, batch_size, windows, 'val')
     with torch.no_grad():
         for batch, target in val_loader:
@@ -69,7 +70,7 @@ def valid(model, file_name, batch_size, windows, train_ratio = 0.7):
             output = model(batch.view(batch_size, windows, 4))
             loss_valid = loss_fn(output.view(-1), target)
             all_loss_val += loss_valid.item()
-    return all_loss_val/len(val_loader.dataset)
+    return all_loss_val/len(val_loader)
 
 def get_optimizer(trial, model):
     optimizer_names = ['Adam', 'MomentumSGD', 'rmsprop']
@@ -120,8 +121,8 @@ file_names = os.listdir(DIR_PATH)
 best_parameter = pd.DataFrame(columns = ['file_name', 'best_parameter'])
 i = 1
 for file_name in file_names:
-    TRIAL_SIZE = 1
-    print('-----------------------------------')
+    TRIAL_SIZE = 100
+    print('--------------------------------------------------------------------------------')
     print(i, file_name)
     i += 1
     study = optuna.create_study(sampler=optuna.samplers.TPESampler(seed=42))

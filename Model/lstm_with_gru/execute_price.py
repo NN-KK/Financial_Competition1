@@ -5,6 +5,7 @@ import sys
 import os
 import pandas as pd
 import numpy as np
+import ast
 from typing import Any, Callable, Optional
 import torch
 import torch.nn.functional as F
@@ -72,6 +73,7 @@ def main(model, optimizer, file_name, train_ratio, batch_size, windows, n_epochs
             
 
     return predict(file_name, windows, model, 'price')
+    #return output[-2], target[-2]
 
 DIR_PATH = "./Pool/"
 file_names = os.listdir(DIR_PATH)
@@ -80,15 +82,35 @@ list_name = []
 # 予測対象日結果を入れるリスト
 list_predict = []
 list_target = []
-i = 0
+i = 1
+param_csv = pd.read_csv('parameter_price_0929.csv')
+val = 0
 for file_name in file_names:
-    model = LSTM_GRU(task='price', hidden_dim_lstm_1 = 30, hidden_dim_lstm_2 = 30, hidden_dim_gru = 30, dropout = 0.12278170908687527)
-    optimizer = optim.SGD(model.parameters(), lr = 0.02437915486890567, weight_decay=4.6375854215219264e-08)
+    param = param_csv[param_csv['file_name'] == file_name]['best_parameter'].values[0]
+    param = ast.literal_eval(param)
+
+    hl1 = int(param['hidden_dim_lstm_1'])
+    hl2 = int(param['hidden_dim_lstm_2'])
+    hg = int(param['hidden_dim_gru'])
+    d = param['dropout']
+    model = LSTM_GRU(task='price', hidden_dim_lstm_1 = hl1, hidden_dim_lstm_2 = hl2, hidden_dim_gru = hg, dropout = d)
+    
+    if param['optimizer'] == 'Adam':
+        optimizer = optim.Adam(model.parameters(), lr = param['adam_lr'], weight_decay=param['weight_decay'])
+    elif param['optimizer'] == 'rmsprop':
+        optimizer = optim.RMSprop(model.parameters(), weight_decay=param['weight_decay'])
+    else:
+        optimizer = optim.SGD(model.parameters(), lr = param['momentum_sgd_lr'], weight_decay=param['weight_decay'])
+
+    batch_size = int(param['batch_size'])
+    windows = int(param['windows'])
+
     print(str(i), " : ", file_name)
     i += 1
-    executed = main(model, optimizer, file_name, 0.7, 16, 3, 100)
+    executed = main(model, optimizer, file_name, 0.7, batch_size, windows, 100)
     predicted = executed[0].view(-1).item()
     target = float(executed[1])
+    val += float(executed[2])
     print(predicted, target)
     # 銘柄の名前の追加
     list_name.append(file_name.split('_')[2][:-4])
@@ -97,9 +119,9 @@ for file_name in file_names:
     list_target.append(target)
 
 df = pd.DataFrame(list_predict, columns = ["result"] , index = list_name)
-df.to_csv('predict_2_lstm_with_gru.csv')
+df.to_csv('predict_2_lstm_with_gru_0930_1.csv')
 df2 = pd.DataFrame(list_target, columns = ["target"] , index = list_name)
 df_merge = pd.concat([df, df2['target']], axis = 1)
-df_merge.to_csv('predict_target_2_lstm_with_gru.csv')
+df_merge.to_csv('predict_target_2_lstm_with_gru_0930_1.csv')
 
-print(mape(np.array(list_target), np.array(list_predict)))
+print(mape(np.array(list_target), np.array(list_predict)), val/22)

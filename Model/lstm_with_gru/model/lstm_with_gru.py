@@ -22,6 +22,7 @@ class LSTM_GRU(nn.Module):
         self.linear = nn.Linear(hidden_dim_lstm_2 + hidden_dim_gru, output_dim)
         self.sigmoid = nn.Sigmoid()
         self.relu = nn.ReLU()
+        self.elu = nn.ELU(alpha = 1.0)
 
     def forward(self, x):
         lstm_1_out, hidden_1 = self.lstm_1(x)
@@ -36,4 +37,4 @@ class LSTM_GRU(nn.Module):
         if self.task == 'updown':
             return self.sigmoid(output)
         else:
-            return self.relu(output)
+            return self.elu(output)

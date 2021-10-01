@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-DIR_PATH = "./Data/data/BinanceData_d/0924/"
+DIR_PATH = "./Data/data/BinanceData_d/0930/"
 file_names = os.listdir(DIR_PATH)
 
 MIN_RECORDS = 600

@@ -10,14 +10,13 @@ LAG = 5
 
 class FinancialDataset(Dataset):
     def __init__(self, df, windows, task):
+        if task == 'price':
+            df['target'] = df['close'].shift(-1) / df['close']
         df.dropna(inplace=True)
         data = df.loc[:, COL]
-        if task == 'updown':
-            target = df.loc[:, 'target']
-        else:
-            target = df['close'].shift(-1) / df['close']
-            target = target.values
+        target = df.loc[:, 'target']
         data = self.minmax_norm(data).values
+        target = target.values
         #target = self.minmax_norm(target).values
         data_list, target_list = [], []
         for i in range(data.shape[0] - windows -1):
