@@ -1,1 +1,0 @@
-[['ohlc_Binance_ADAUSDT_d.csv', {'hidden_dim_lstm_1': 40.0, 'hidden_dim_lstm_2': 100.0, 'hidden_dim_gru': 80.0, 'dropout': 0.26208630215377515, 'optimizer': 'Adam', 'weight_decay': 0.00011567327199145979, 'adam_lr': 0.002537815508265664, 'batch_size': 96.0, 'windows': 1.0}]]

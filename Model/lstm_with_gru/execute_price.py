@@ -119,9 +119,9 @@ for file_name in file_names:
     list_target.append(target)
 
 df = pd.DataFrame(list_predict, columns = ["result"] , index = list_name)
-df.to_csv('predict_2_lstm_with_gru_0930_1.csv')
+df.to_csv('predict_2_lstm_with_gru.csv')
 df2 = pd.DataFrame(list_target, columns = ["target"] , index = list_name)
 df_merge = pd.concat([df, df2['target']], axis = 1)
-df_merge.to_csv('predict_target_2_lstm_with_gru_0930_1.csv')
+df_merge.to_csv('predict_target_2_lstm_with_gru.csv')
 
 print(mape(np.array(list_target), np.array(list_predict)), val/22)
